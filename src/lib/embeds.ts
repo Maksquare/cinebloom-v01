@@ -98,153 +98,123 @@ export const STREAM_SERVERS: StreamServer[] = [
     },
   },
   {
-    id: 'moviesapi',
-    name: 'MoviesAPI Club',
-    tag: 'Fast Dedicated Cloud Mirror',
-    speed: 'Fast',
-    quality: '1080p HD',
+    id: 'primesrc',
+    name: 'PrimeSrc 4K',
+    tag: 'NotFlix High-Speed 4K HDR • Low Latency',
+    speed: 'Ultra',
+    quality: '4K HDR',
     hasSubtitles: true,
     getUrl: (media: MediaItem, season = 1, episode = 1) => {
       const tmdbId = media.tmdbId || media.id;
       if (media.mediaType === 'tv') {
-        return `https://moviesapi.club/tv/${tmdbId}-${season}-${episode}`;
+        return `https://primesrc.me/embed/tv?tmdb=${tmdbId}&season=${season}&episode=${episode}`;
       }
-      return `https://moviesapi.club/movie/${tmdbId}`;
+      return `https://primesrc.me/embed/movie?tmdb=${tmdbId}`;
     },
   },
   {
-    id: 'multiembed',
-    name: 'MultiEmbed',
-    tag: 'MultiEmbed (10+ Built-in Auto Mirrors)',
-    speed: 'Fast',
-    quality: '1080p HD',
-    hasSubtitles: true,
-    getUrl: (media: MediaItem, season = 1, episode = 1) => {
-      const tmdbId = media.tmdbId || media.id;
-      if (media.mediaType === 'tv') {
-        return `https://multiembed.mov/?video_id=${tmdbId}&tmdb=1&s=${season}&e=${episode}`;
-      }
-      return `https://multiembed.mov/?video_id=${tmdbId}&tmdb=1`;
-    },
-  },
-  {
-    id: 'videasy',
-    name: 'Videasy HD',
-    tag: 'Videasy Player CDN',
-    speed: 'Fast',
-    quality: '1080p HD',
-    hasSubtitles: true,
-    getUrl: (media: MediaItem, season = 1, episode = 1) => {
-      const tmdbId = media.tmdbId || media.id;
-      if (media.mediaType === 'tv') {
-        return `https://player.videasy.to/tv/${tmdbId}/${season}/${episode}`;
-      }
-      return `https://player.videasy.to/movie/${tmdbId}`;
-    },
-  },
-  {
-    id: '2embed',
-    name: '2Embed',
-    tag: '2Embed High Speed',
-    speed: 'Fast',
-    quality: '1080p HD',
-    hasSubtitles: true,
-    getUrl: (media: MediaItem, season = 1, episode = 1) => {
-      const tmdbId = media.tmdbId || media.id;
-      if (media.mediaType === 'tv') {
-        return `https://www.2embed.cc/embedtv/${tmdbId}&s=${season}&e=${episode}`;
-      }
-      return `https://www.2embed.cc/embed/${tmdbId}`;
-    },
-  },
-  {
-    id: 'smashystream',
-    name: 'SmashyStream',
-    tag: 'SmashyStream Fast Cloud',
-    speed: 'Fast',
-    quality: '1080p HD',
-    hasSubtitles: true,
-    getUrl: (media: MediaItem, season = 1, episode = 1) => {
-      const tmdbId = media.tmdbId || media.id;
-      if (media.mediaType === 'tv') {
-        return `https://player.smashystream.com/tv/${tmdbId}?s=${season}&e=${episode}`;
-      }
-      return `https://player.smashystream.com/movie/${tmdbId}`;
-    },
-  },
-  {
-    id: '111movies',
-    name: '111movies',
-    tag: '111movies Cloud',
-    speed: 'Fast',
-    quality: '1080p HD',
-    hasSubtitles: true,
-    getUrl: (media: MediaItem, season = 1, episode = 1) => {
-      const tmdbId = media.tmdbId || media.id;
-      if (media.mediaType === 'tv') {
-        return `https://111movies.net/tv/${tmdbId}/${season}/${episode}`;
-      }
-      return `https://111movies.net/movie/${tmdbId}`;
-    },
-  },
-  {
-    id: 'vidrock',
-    name: 'Vidrock',
-    tag: 'Vidrock HD Mirror',
-    speed: 'Fast',
-    quality: '1080p HD',
-    hasSubtitles: true,
-    getUrl: (media: MediaItem, season = 1, episode = 1) => {
-      const tmdbId = media.tmdbId || media.id;
-      if (media.mediaType === 'tv') {
-        return `https://vidrock.net/embed/tv/${tmdbId}/${season}/${episode}`;
-      }
-      return `https://vidrock.net/embed/movie/${tmdbId}`;
-    },
-  },
-  {
-    id: 'vidsrc-to',
-    name: 'VidSrc.to',
-    tag: 'VidSrc Direct HD',
+    id: 'vidcore',
+    name: 'VidCore Turbo',
+    tag: 'Direct High-Speed HLS • Fast AutoPlay',
     speed: 'Ultra',
     quality: '1080p HD',
     hasSubtitles: true,
     getUrl: (media: MediaItem, season = 1, episode = 1) => {
       const tmdbId = media.tmdbId || media.id;
       if (media.mediaType === 'tv') {
-        return `https://vidsrc.to/embed/tv/${tmdbId}/${season}/${episode}`;
+        return `https://vidcore.net/tv/${tmdbId}/${season}/${episode}?autoPlay=true`;
       }
-      return `https://vidsrc.to/embed/movie/${tmdbId}`;
+      return `https://vidcore.net/movie/${tmdbId}?autoPlay=true`;
     },
   },
   {
-    id: 'vidsrc-me',
-    name: 'VidSrc.me',
-    tag: 'VidSrc.me Mirror',
+    id: 'vidfast',
+    name: 'VidFast VIP',
+    tag: 'VidSrc WTF VIP Node 3 • Zero Buffer',
+    speed: 'Ultra',
+    quality: '1080p HD',
+    hasSubtitles: true,
+    getUrl: (media: MediaItem, season = 1, episode = 1) => {
+      const tmdbId = media.tmdbId || media.id;
+      if (media.mediaType === 'tv') {
+        return `https://www.vidsrc.wtf/3/tv/${tmdbId}/${season}/${episode}?color=e01621`;
+      }
+      return `https://www.vidsrc.wtf/3/movie/${tmdbId}?color=e01621`;
+    },
+  },
+  {
+    id: 'srcwtf',
+    name: 'SrcWTF Node 1',
+    tag: 'VidSrc WTF Edge 1 • Adaptive Cloud',
+    speed: 'Ultra',
+    quality: '1080p HD',
+    hasSubtitles: true,
+    getUrl: (media: MediaItem, season = 1, episode = 1) => {
+      const tmdbId = media.tmdbId || media.id;
+      if (media.mediaType === 'tv') {
+        return `https://www.vidsrc.wtf/1/tv/${tmdbId}/${season}/${episode}?color=e01621`;
+      }
+      return `https://www.vidsrc.wtf/1/movie/${tmdbId}?color=e01621`;
+    },
+  },
+  {
+    id: 'premium-wtf',
+    name: 'Premium WTF',
+    tag: 'Dedicated Premium WTF Line 4',
+    speed: 'Ultra',
+    quality: '4K HDR',
+    hasSubtitles: true,
+    getUrl: (media: MediaItem, season = 1, episode = 1) => {
+      const tmdbId = media.tmdbId || media.id;
+      if (media.mediaType === 'tv') {
+        return `https://www.vidsrc.wtf/4/tv/${tmdbId}/${season}/${episode}?color=e01621`;
+      }
+      return `https://www.vidsrc.wtf/4/movie/${tmdbId}?color=e01621`;
+    },
+  },
+  {
+    id: 'vidzee',
+    name: 'VidZee HD',
+    tag: 'VidZee Player Cloud Network',
     speed: 'Fast',
     quality: '1080p HD',
     hasSubtitles: true,
     getUrl: (media: MediaItem, season = 1, episode = 1) => {
       const tmdbId = media.tmdbId || media.id;
       if (media.mediaType === 'tv') {
-        return `https://vidsrc.me/embed/tv?tmdb=${tmdbId}&season=${season}&episode=${episode}`;
+        return `https://player.vidzee.wtf/embed/tv/${tmdbId}/${season}/${episode}`;
       }
-      return `https://vidsrc.me/embed/movie?tmdb=${tmdbId}`;
+      return `https://player.vidzee.wtf/embed/movie/${tmdbId}`;
     },
   },
   {
-    id: 'vidsrc-in',
-    name: 'VidSrc.in',
-    tag: 'VidSrc.in Mirror',
+    id: 'moviesapi-to',
+    name: 'MoviesAPI.to',
+    tag: 'MoviesAPI Fast Content Delivery',
     speed: 'Fast',
     quality: '1080p HD',
     hasSubtitles: true,
     getUrl: (media: MediaItem, season = 1, episode = 1) => {
       const tmdbId = media.tmdbId || media.id;
       if (media.mediaType === 'tv') {
-        return `https://vidsrc.in/embed/tv?tmdb=${tmdbId}&season=${season}&episode=${episode}`;
+        return `https://moviesapi.to/tv/${tmdbId}-${season}-${episode}`;
       }
-      return `https://vidsrc.in/embed/movie?tmdb=${tmdbId}`;
+      return `https://moviesapi.to/movie/${tmdbId}`;
+    },
+  },
+  {
+    id: 'vidsrc-embed-ru',
+    name: 'VidSrc RU Cloud',
+    tag: 'VidSrc Embed RU Mirror',
+    speed: 'Fast',
+    quality: '1080p HD',
+    hasSubtitles: true,
+    getUrl: (media: MediaItem, season = 1, episode = 1) => {
+      const tmdbId = media.tmdbId || media.id;
+      if (media.mediaType === 'tv') {
+        return `https://vidsrc-embed.ru/embed/tv/${tmdbId}/${season}/${episode}`;
+      }
+      return `https://vidsrc-embed.ru/embed/movie/${tmdbId}`;
     },
   },
 ];
@@ -258,3 +228,82 @@ export function getEmbedUrl(
   const server = STREAM_SERVERS.find((s) => s.id === serverId) || STREAM_SERVERS[0];
   return server.getUrl(media, season, episode);
 }
+
+/**
+ * OpenSubtitles query helper (extracted from NotFlix & enhanced)
+ */
+export function getOpenSubtitlesSearchUrl(
+  title: string,
+  year?: string,
+  season?: number,
+  episode?: number,
+  languageCode: string = 'all'
+): string {
+  const query = season && episode
+    ? `${title} S${String(season).padStart(2, '0')}E${String(episode).padStart(2, '0')}`
+    : `${title} ${year || ''}`.trim();
+  return `https://www.opensubtitles.org/en/search2/sublanguageid-${languageCode}/moviename-${encodeURIComponent(query)}`;
+}
+
+export interface DownloadSource {
+  quality: string;
+  name: string;
+  format: string;
+  type: 'direct' | 'stream' | 'torrent' | 'magnet';
+  url: string;
+  badge?: string;
+}
+
+export function getDownloadSources(
+  media: MediaItem,
+  season = 1,
+  episode = 1
+): DownloadSource[] {
+  const tmdbId = media.tmdbId || media.id;
+  const isTv = media.mediaType === 'tv';
+  const query = isTv
+    ? `${media.title} S${String(season).padStart(2, '0')}E${String(episode).padStart(2, '0')}`
+    : `${media.title} ${media.releaseDate ? media.releaseDate.split('-')[0] : ''}`.trim();
+
+  return [
+    {
+      quality: '4K Ultra HD',
+      name: 'Direct Fast Mirror 1 (VidLink Pro)',
+      format: 'MKV / H.265 HDR',
+      type: 'stream',
+      badge: 'Ultra Fast',
+      url: isTv
+        ? `https://vidlink.pro/tv/${tmdbId}/${season}/${episode}`
+        : `https://vidlink.pro/movie/${tmdbId}`,
+    },
+    {
+      quality: '1080p Full HD',
+      name: 'High-Speed Cloud Stream (VidSrc VIP)',
+      format: 'MP4 / 1080p',
+      type: 'stream',
+      badge: 'Recommended',
+      url: isTv
+        ? `https://vidsrcme.ru/embed/tv?tmdb=${tmdbId}&season=${season}&episode=${episode}`
+        : `https://vidsrcme.ru/embed/movie?tmdb=${tmdbId}`,
+    },
+    {
+      quality: '1080p HD',
+      name: 'PrimeSrc Turbo Direct CDN',
+      format: 'MP4 / AAC',
+      type: 'direct',
+      badge: 'NotFlix Mirror',
+      url: isTv
+        ? `https://primesrc.me/embed/tv?tmdb=${tmdbId}&season=${season}&episode=${episode}`
+        : `https://primesrc.me/embed/movie?tmdb=${tmdbId}`,
+    },
+    {
+      quality: 'YTS / Torrentio Search',
+      name: 'P2P Ultra Seedbox Torrent Search',
+      format: 'Torrent / Magnet',
+      type: 'torrent',
+      badge: 'P2P',
+      url: `https://1337x.to/search/${encodeURIComponent(query)}/1/`,
+    },
+  ];
+}
+

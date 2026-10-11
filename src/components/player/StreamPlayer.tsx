@@ -14,6 +14,8 @@ interface StreamPlayerProps {
   episode?: number;
   isLightsOut: boolean;
   onToggleLightsOut: () => void;
+  isControlledPlaying?: boolean;
+  onStartPlaying?: () => void;
 }
 
 export const StreamPlayer: React.FC<StreamPlayerProps> = ({
@@ -22,12 +24,20 @@ export const StreamPlayer: React.FC<StreamPlayerProps> = ({
   episode = 1,
   isLightsOut,
   onToggleLightsOut,
+  isControlledPlaying,
+  onStartPlaying,
 }) => {
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(Boolean(isControlledPlaying));
   const [activeServerId, setActiveServerId] = useState<string>(STREAM_SERVERS[0].id);
   const [reloadKey, setReloadKey] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [showSlowHelper, setShowSlowHelper] = useState(false);
+
+  useEffect(() => {
+    if (isControlledPlaying !== undefined) {
+      setIsPlaying(isControlledPlaying);
+    }
+  }, [isControlledPlaying]);
 
   // Track watch progress in storage / cloud
   useEffect(() => {
@@ -63,6 +73,9 @@ export const StreamPlayer: React.FC<StreamPlayerProps> = ({
 
   const handleStartStream = () => {
     setIsPlaying(true);
+    if (onStartPlaying) {
+      onStartPlaying();
+    }
   };
 
   const handleRefresh = () => {
@@ -99,7 +112,7 @@ export const StreamPlayer: React.FC<StreamPlayerProps> = ({
                 handleStartStream();
               }
             }}
-            aria-label={`Start streaming ${media.title}`}
+            aria-label={`Watch now: ${media.title}`}
             className="group relative h-full w-full cursor-pointer select-none overflow-hidden"
           >
             {/* Optimized Backdrop Poster */}
@@ -141,7 +154,7 @@ export const StreamPlayer: React.FC<StreamPlayerProps> = ({
 
               <div className="text-center px-4">
                 <p className="text-sm sm:text-base font-bold text-white tracking-wide drop-shadow-md">
-                  Click to Stream Now
+                  Watch Now in 4K HDR
                 </p>
                 <p className="mt-0.5 text-xs text-amber-200/70 font-medium">
                   Instant fast connection • Fast servers for mobile & Ethiopia

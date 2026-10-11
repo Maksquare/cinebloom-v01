@@ -6,9 +6,6 @@ import {
   Star,
   Calendar,
   Clock,
-  ArrowLeft,
-  ChevronRight,
-  Film,
 } from 'lucide-react';
 import { getMediaById, getSimilarMedia, createMediaSlug, parseMediaId } from '@/lib/tmdb';
 import { WatchRoomInteractive } from '@/components/player/WatchRoomInteractive';
@@ -188,45 +185,9 @@ export default async function WatchPage({ params, searchParams }: WatchPageProps
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
 
-      <div className="relative min-h-screen py-6 sm:py-8">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          {/* Breadcrumb Navigation */}
-          <nav aria-label="Breadcrumb" className="flex items-center justify-between gap-4 mb-4 sm:mb-6">
-            <Link
-              href="/"
-              className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3.5 py-1.5 text-xs font-semibold text-white/80 hover:border-white/25 hover:bg-white/10 hover:text-white transition-all"
-            >
-              <ArrowLeft className="h-3.5 w-3.5 text-amber-400" />
-              <span>Back to Browse</span>
-            </Link>
-
-            <ol className="flex items-center gap-2 text-xs text-white/50">
-              <li>
-                <Link href="/" className="hover:text-white transition-colors">
-                  Home
-                </Link>
-              </li>
-              <li>
-                <ChevronRight className="h-3 w-3 text-white/30" />
-              </li>
-              <li>
-                <Link
-                  href={`/explore?type=${media.mediaType}`}
-                  className="hover:text-white capitalize transition-colors"
-                >
-                  {media.category}
-                </Link>
-              </li>
-              <li>
-                <ChevronRight className="h-3 w-3 text-white/30" />
-              </li>
-              <li aria-current="page" className="text-white font-medium truncate max-w-[180px] sm:max-w-[280px]">
-                {media.title}
-              </li>
-            </ol>
-          </nav>
-
-          {/* 1. Main Streaming Player Section with Facade */}
+      <div className="relative min-h-screen pt-2 pb-8 sm:py-6">
+        <div className="mx-auto max-w-7xl px-3 sm:px-6 lg:px-8">
+          {/* 1. Phonofilm Showcase Hero & Streaming Player Suite */}
           <WatchRoomInteractive
             media={media}
             initialSeason={seasonParam}
