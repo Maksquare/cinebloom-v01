@@ -36,10 +36,10 @@ export const ServerSwitcher: React.FC<ServerSwitcherProps> = ({
 }) => {
   const [showMoreServers, setShowMoreServers] = useState(false);
 
-  // Top 2 Primary Options
-  const primaryServers = STREAM_SERVERS.slice(0, 2);
+  // Top 3 Primary Options
+  const primaryServers = STREAM_SERVERS.slice(0, 3);
   // Hidden Backup Mirrors
-  const backupServers = STREAM_SERVERS.slice(2);
+  const backupServers = STREAM_SERVERS.slice(3);
 
   const activeServer =
     STREAM_SERVERS.find((s) => s.id === activeServerId) || STREAM_SERVERS[0];
@@ -72,9 +72,9 @@ export const ServerSwitcher: React.FC<ServerSwitcherProps> = ({
         </div>
       </div>
 
-      {/* Primary 2 Servers + Smart More Dropdown Trigger */}
+      {/* Primary 3 Servers + Smart More Dropdown Trigger */}
       <div className="flex flex-wrap items-center gap-2 sm:gap-2.5">
-        {/* Option 1: VidSrc VIP */}
+        {/* Option 1: VidLink Ultra */}
         {primaryServers[0] && (
           <button
             type="button"
@@ -136,6 +136,38 @@ export const ServerSwitcher: React.FC<ServerSwitcherProps> = ({
               }`}
             >
               Mirror 2
+            </span>
+          </button>
+        )}
+
+        {/* Option 3: PrimeSrc 4K */}
+        {primaryServers[2] && (
+          <button
+            type="button"
+            onClick={() => {
+              onSelectServer(primaryServers[2].id);
+              setShowMoreServers(false);
+            }}
+            className={`group relative flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
+              activeServerId === primaryServers[2].id
+                ? 'bg-gradient-to-r from-emerald-600 to-emerald-500 text-white font-bold shadow-lg shadow-emerald-600/40 border border-emerald-400/50 scale-[1.02]'
+                : 'border border-emerald-500/30 bg-emerald-500/10 text-emerald-200 hover:bg-emerald-500/20 hover:border-emerald-400/60'
+            }`}
+          >
+            <Sparkles
+              className={`h-4 w-4 ${
+                activeServerId === primaryServers[2].id ? 'text-white' : 'text-emerald-400'
+              }`}
+            />
+            <span>{primaryServers[2].name}</span>
+            <span
+              className={`text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded-md font-bold ${
+                activeServerId === primaryServers[2].id
+                  ? 'bg-white/20 text-white'
+                  : 'bg-emerald-500/20 text-emerald-300'
+              }`}
+            >
+              4K NotFlix
             </span>
           </button>
         )}

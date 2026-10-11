@@ -193,8 +193,8 @@ export const StreamPlayer: React.FC<StreamPlayerProps> = ({
               title={`${media.title} Stream Player`}
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
               allowFullScreen
-              referrerPolicy="origin"
-              loading="lazy"
+              referrerPolicy="origin-when-cross-origin"
+              loading="eager"
               onLoad={() => setIsLoading(false)}
               className="h-full w-full border-0"
             />

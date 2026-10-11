@@ -53,17 +53,18 @@ export const PhonofilmHero: React.FC<PhonofilmHeroProps> = ({
 }) => {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
-  const [isMuted, setIsMuted] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [hasWatched, setHasWatched] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(128);
   const [shareCopied, setShareCopied] = useState(false);
+  const [trailerKey, setTrailerKey] = useState<string | null>(media.trailerYoutubeKey || null);
+  const [isTrailerReady, setIsTrailerReady] = useState(false);
 
   useEffect(() => {
     setIsBookmarked(isInWatchlist(media.id));
     setHasWatched(isWatched(media.id));
-    // Check liked from localStorage
     try {
       const likedState = localStorage.getItem(`cinemahd-liked-${media.id}`) === 'true';
       setIsLiked(likedState);
@@ -73,6 +74,25 @@ export const PhonofilmHero: React.FC<PhonofilmHeroProps> = ({
       // ignore
     }
   }, [media.id, media.voteCount]);
+
+  // Ensure trailer key is fetched if not present in initial media object
+  useEffect(() => {
+    if (media.trailerYoutubeKey) {
+      setTrailerKey(media.trailerYoutubeKey);
+    } else {
+      fetch(`/api/tmdb/details?id=${media.id}&type=${media.mediaType}`)
+        .then((res) => res.json())
+        .then((data) => {
+          const trailer = data?.videos?.results?.find(
+            (v: any) => v.site === 'YouTube' && (v.type === 'Trailer' || v.type === 'Teaser')
+          );
+          if (trailer?.key) {
+            setTrailerKey(trailer.key);
+          }
+        })
+        .catch(() => {});
+    }
+  }, [media.id, media.mediaType, media.trailerYoutubeKey]);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -110,12 +130,10 @@ export const PhonofilmHero: React.FC<PhonofilmHeroProps> = ({
     }
   };
 
-  // Determine release year
   const releaseYear = media.releaseDate ? media.releaseDate.split('-')[0] : '2026';
   const isTv = media.mediaType === 'tv';
   const formattedRating = Number(media.voteAverage || 8.0).toFixed(1);
 
-  // Determine parental rating
   const getParentalRating = () => {
     const genresLower = (media.genres || []).map((g) => g.toLowerCase());
     if (
@@ -153,7 +171,7 @@ export const PhonofilmHero: React.FC<PhonofilmHeroProps> = ({
           <button
             type="button"
             onClick={() => router.back()}
-            className="flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-full bg-[#18181f]/80 hover:bg-[#252530] text-white/90 hover:text-white border border-white/10 backdrop-blur-md transition-all shadow-md cursor-pointer"
+            className="flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-full bg-[#16161e]/90 hover:bg-[#252530] text-white/90 hover:text-white border border-white/15 backdrop-blur-md transition-all shadow-lg cursor-pointer"
             title="Go Back"
           >
             <ArrowLeft className="h-4 w-4 sm:h-5 sm:w-5" />
@@ -161,7 +179,7 @@ export const PhonofilmHero: React.FC<PhonofilmHeroProps> = ({
 
           <Link
             href="/"
-            className="flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-full bg-[#18181f]/80 hover:bg-[#252530] text-white/90 hover:text-white border border-white/10 backdrop-blur-md transition-all shadow-md cursor-pointer"
+            className="flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-full bg-[#16161e]/90 hover:bg-[#252530] text-white/90 hover:text-white border border-white/15 backdrop-blur-md transition-all shadow-lg cursor-pointer"
             title="Go to Homepage"
           >
             <Home className="h-4 w-4 sm:h-5 sm:w-5" />
@@ -174,13 +192,13 @@ export const PhonofilmHero: React.FC<PhonofilmHeroProps> = ({
           className="relative flex-1 max-w-md mx-2 sm:mx-4"
         >
           <div className="relative flex items-center">
-            <Search className="absolute left-4 h-4 w-4 text-white/40 pointer-events-none" />
+            <Search className="absolute left-4 h-4 w-4 text-white/50 pointer-events-none" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search Movies &amp; Series"
-              className="w-full rounded-full border border-white/12 bg-[#18181f]/85 py-2 sm:py-2.5 pl-11 pr-4 text-xs sm:text-sm text-white placeholder-white/40 backdrop-blur-md focus:border-amber-400/60 focus:bg-[#202028] focus:outline-none transition-all shadow-inner"
+              className="w-full rounded-full border border-white/15 bg-[#16161e]/90 py-2 sm:py-2.5 pl-11 pr-4 text-xs sm:text-sm text-white placeholder-white/50 backdrop-blur-md focus:border-amber-400/60 focus:bg-[#1e1e28] focus:outline-none transition-all shadow-inner"
             />
           </div>
         </form>
@@ -189,7 +207,7 @@ export const PhonofilmHero: React.FC<PhonofilmHeroProps> = ({
         <div className="flex items-center gap-2">
           <Link
             href="/profile"
-            className="flex items-center gap-1.5 rounded-full bg-[#18181f]/80 hover:bg-[#252530] px-3.5 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-semibold text-white/90 hover:text-white border border-white/10 backdrop-blur-md transition-all shadow-md cursor-pointer"
+            className="flex items-center gap-1.5 rounded-full bg-[#16161e]/90 hover:bg-[#252530] px-3.5 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-semibold text-white/90 hover:text-white border border-white/15 backdrop-blur-md transition-all shadow-lg cursor-pointer"
           >
             <User className="h-4 w-4 text-amber-400" />
             <span className="hidden sm:inline">Me</span>
@@ -198,96 +216,113 @@ export const PhonofilmHero: React.FC<PhonofilmHeroProps> = ({
           <button
             type="button"
             onClick={() => setIsMuted((prev) => !prev)}
-            className="flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-full bg-[#18181f]/80 hover:bg-[#252530] text-white/90 hover:text-white border border-white/10 backdrop-blur-md transition-all shadow-md cursor-pointer"
-            title={isMuted ? 'Unmute Audio' : 'Mute Audio'}
+            className="flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-full bg-[#16161e]/90 hover:bg-[#252530] text-white/90 hover:text-white border border-white/15 backdrop-blur-md transition-all shadow-lg cursor-pointer group"
+            title={isMuted ? 'Unmute Trailer Audio' : 'Mute Trailer Audio'}
           >
             {isMuted ? (
               <VolumeX className="h-4 w-4 sm:h-5 sm:w-5 text-amber-400" />
             ) : (
-              <Volume2 className="h-4 w-4 sm:h-5 sm:w-5" />
+              <Volume2 className="h-4 w-4 sm:h-5 sm:w-5 text-emerald-400" />
             )}
           </button>
         </div>
       </div>
 
       {/* Main Phonofilm-style Movie Card */}
-      <div className="relative w-full overflow-hidden rounded-3xl border border-white/12 bg-[#0d0d12] shadow-[0_25px_70px_rgba(0,0,0,0.85)] min-h-[500px] sm:min-h-[560px] lg:min-h-[620px] flex flex-col justify-end p-5 sm:p-10 lg:p-14">
-        {/* Background Backdrop Image */}
-        <div className="absolute inset-0 z-0">
+      <div className="relative w-full overflow-hidden rounded-3xl border border-white/15 bg-[#07070a] shadow-[0_25px_80px_rgba(0,0,0,0.95)] min-h-[520px] sm:min-h-[580px] lg:min-h-[640px] flex flex-col justify-end p-6 sm:p-10 lg:p-14">
+        {/* Background Autoplaying Video Trailer / High-Res Poster */}
+        <div className="absolute inset-0 z-0 overflow-hidden select-none pointer-events-none">
+          {/* Base Backdrop Image always loaded first for zero delay */}
           <Image
             src={backdropImage}
             alt={`${media.title} backdrop`}
             fill
             priority
             sizes="100vw"
-            className="object-cover object-center filter brightness-[0.78] contrast-[1.08] transition-transform duration-1000 ease-out hover:scale-102"
+            className={`object-cover object-center filter brightness-[0.7] contrast-[1.1] transition-opacity duration-1000 ${
+              isTrailerReady ? 'opacity-30' : 'opacity-100'
+            }`}
           />
 
-          {/* Cinematic Vignette Gradients */}
-          {/* Horizontal dark gradient from left to right */}
-          <div className="absolute inset-0 bg-gradient-to-r from-[#0d0d12] via-[#0d0d12]/90 sm:via-[#0d0d12]/80 md:via-[#0d0d12]/60 to-transparent z-1" />
+          {/* Autoplaying Trailer Video */}
+          {trailerKey && (
+            <div className="absolute inset-0 overflow-hidden">
+              <iframe
+                key={`${trailerKey}-${isMuted ? 'muted' : 'unmuted'}`}
+                src={`https://www.youtube-nocookie.com/embed/${trailerKey}?autoplay=1&mute=${
+                  isMuted ? 1 : 0
+                }&controls=0&showinfo=0&rel=0&loop=1&playlist=${trailerKey}&modestbranding=1&iv_load_policy=3&playsinline=1&disablekb=1&fs=0`}
+                title={`${media.title} Background Trailer`}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                onLoad={() => setIsTrailerReady(true)}
+                className="absolute top-1/2 left-1/2 w-[180%] h-[180%] -translate-x-1/2 -translate-y-1/2 object-cover border-0 scale-125 opacity-90 transition-opacity duration-700 pointer-events-none"
+              />
+            </div>
+          )}
 
-          {/* Vertical dark gradient from bottom to top */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0d0d12] via-[#0d0d12]/75 to-transparent/30 z-1" />
+          {/* ULTRA HIGH CONTRAST VIGNETTE MASKS */}
+          {/* 1. Deep solid dark vignette from left to right (ensures 100% crisp contrast for all text) */}
+          <div className="absolute inset-0 bg-gradient-to-r from-[#07070a] via-[#07070a]/98 via-40% md:via-55% to-transparent z-1" />
 
-          {/* Soft ambient tint */}
-          <div className="absolute inset-0 bg-radial-at-tl from-amber-500/5 via-transparent to-black/60 z-1" />
+          {/* 2. Deep solid dark vignette from bottom to top */}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#07070a] via-[#07070a]/90 via-30% to-transparent z-1" />
+
+          {/* 3. Subtle top shadow for navbar harmony */}
+          <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-[#07070a]/80 to-transparent z-1" />
         </div>
 
-        {/* Foreground Content (Left Aligned exactly as in image) */}
-        <div className="relative z-10 max-w-3xl space-y-4 sm:space-y-5">
+        {/* Foreground Content (Left Aligned with Perfect High Contrast) */}
+        <div className="relative z-10 max-w-2xl sm:max-w-3xl space-y-4 sm:space-y-5">
           {/* Movie / Show Title */}
           <div>
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white drop-shadow-[0_4px_16px_rgba(0,0,0,0.8)]">
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white drop-shadow-[0_4px_20px_rgba(0,0,0,1)]">
               {media.title}
             </h1>
 
             {/* Tagline if available */}
             {media.tagline && (
-              <p className="mt-1 text-xs sm:text-sm italic font-medium text-amber-300/80 drop-shadow">
+              <p className="mt-1 text-xs sm:text-sm font-bold text-amber-300 drop-shadow-[0_2px_8px_rgba(0,0,0,1)]">
                 &ldquo;{media.tagline}&rdquo;
               </p>
             )}
           </div>
 
-          {/* Synopsis Description */}
-          <p className="text-xs sm:text-sm lg:text-base text-white/85 leading-relaxed max-w-2xl drop-shadow line-clamp-3 sm:line-clamp-4">
+          {/* Synopsis Description with High-Contrast Typography */}
+          <p className="text-xs sm:text-sm lg:text-base text-white font-medium leading-relaxed max-w-2xl drop-shadow-[0_2px_10px_rgba(0,0,0,1)] line-clamp-3 sm:line-clamp-4">
             {media.overview}
           </p>
 
-          {/* Badges Row: TV Show / Movie, Star rating, Year, Genres */}
-          <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-xs sm:text-sm font-semibold text-white/90">
+          {/* Badges Row: TV Show / Movie, Star rating, Year, Genres with Solid Dark Backing */}
+          <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 text-xs sm:text-sm font-bold">
             {/* Category / Type Pill */}
-            <span className="rounded-full border border-white/20 bg-white/10 px-3 py-0.5 text-xs font-bold uppercase tracking-wider backdrop-blur-md">
+            <span className="rounded-full border border-white/20 bg-black/80 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-white shadow-md backdrop-blur-md">
               {isTv ? 'TV Show' : 'Movie'}
             </span>
 
             {/* Rating badge */}
-            <span className="flex items-center gap-1 text-amber-400 font-bold">
-              <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
+            <span className="flex items-center gap-1.5 rounded-full border border-amber-400/40 bg-black/80 px-3.5 py-1 text-xs font-bold text-amber-300 shadow-md backdrop-blur-md">
+              <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
               <span>{formattedRating}</span>
             </span>
 
-            <span className="text-white/40">•</span>
-
             {/* Release Year */}
-            <span className="text-white/80">{releaseYear}</span>
-
-            <span className="text-white/40">•</span>
+            <span className="rounded-full border border-white/15 bg-black/80 px-3.5 py-1 text-xs font-semibold text-white/90 shadow-md backdrop-blur-md">
+              {releaseYear}
+            </span>
 
             {/* Genres */}
-            <span className="text-white/80 truncate max-w-xs">
+            <span className="rounded-full border border-white/15 bg-black/80 px-3.5 py-1 text-xs font-semibold text-white/90 shadow-md backdrop-blur-md truncate max-w-xs">
               {(media.genres && media.genres.length > 0 ? media.genres : ['Action', 'Drama']).join(', ')}
             </span>
           </div>
 
           {/* Primary Action Buttons Row: Watch Now, Download, Trailer */}
           <div className="flex flex-wrap items-center gap-3 pt-2">
-            {/* 1. Watch Now Button (White Pill with play icon - per user explicit instruction) */}
+            {/* 1. Watch Now Button (White Pill with play icon) */}
             <button
               type="button"
               onClick={onWatchNow}
-              className="flex items-center gap-2 rounded-full bg-white hover:bg-neutral-100 text-black px-7 sm:px-8 py-3 text-sm sm:text-base font-bold shadow-[0_10px_30px_rgba(255,255,255,0.25)] hover:scale-[1.03] transition-all cursor-pointer group"
+              className="flex items-center gap-2 rounded-full bg-white hover:bg-neutral-100 text-black px-7 sm:px-8 py-3 text-sm sm:text-base font-extrabold shadow-[0_10px_30px_rgba(0,0,0,0.8)] hover:scale-[1.03] transition-all cursor-pointer group"
             >
               <div className="flex h-5 w-5 items-center justify-center rounded-full bg-black text-white group-hover:scale-110 transition-transform">
                 <Play className="h-3 w-3 fill-white translate-x-0.5" />
@@ -299,7 +334,7 @@ export const PhonofilmHero: React.FC<PhonofilmHeroProps> = ({
             <button
               type="button"
               onClick={onOpenDownload}
-              className="flex items-center gap-2 rounded-full bg-[#e59b2c] hover:bg-[#d48c20] text-black px-6 sm:px-7 py-3 text-sm sm:text-base font-bold shadow-[0_10px_30px_rgba(229,155,44,0.3)] hover:scale-[1.03] transition-all cursor-pointer"
+              className="flex items-center gap-2 rounded-full bg-[#e59b2c] hover:bg-[#d48c20] text-black px-6 sm:px-7 py-3 text-sm sm:text-base font-extrabold shadow-[0_10px_30px_rgba(0,0,0,0.8)] hover:scale-[1.03] transition-all cursor-pointer"
             >
               <Download className="h-4 w-4 sm:h-5 sm:w-5 stroke-[2.5]" />
               <span>Download</span>
@@ -309,7 +344,7 @@ export const PhonofilmHero: React.FC<PhonofilmHeroProps> = ({
             <button
               type="button"
               onClick={onOpenTrailer}
-              className="flex items-center gap-2 rounded-full border border-white/15 bg-white/10 hover:bg-white/20 text-white px-5 sm:px-6 py-3 text-sm sm:text-base font-semibold backdrop-blur-md transition-all cursor-pointer"
+              className="flex items-center gap-2 rounded-full border border-white/20 bg-black/70 hover:bg-black/90 text-white px-5 sm:px-6 py-3 text-sm sm:text-base font-bold backdrop-blur-md shadow-[0_10px_30px_rgba(0,0,0,0.8)] transition-all cursor-pointer"
             >
               <div className="flex h-4 w-4 items-center justify-center rounded-full bg-red-600 text-white">
                 <Play className="h-2.5 w-2.5 fill-white translate-x-0.5" />
@@ -318,7 +353,7 @@ export const PhonofilmHero: React.FC<PhonofilmHeroProps> = ({
             </button>
           </div>
 
-          {/* Subtitles Banner (Subtitles in your language [flags] >) */}
+          {/* Subtitles Banner (Subtitles in your language [flags] >) with Solid Legible Container */}
           <div
             onClick={onOpenSubtitles}
             role="button"
@@ -329,15 +364,15 @@ export const PhonofilmHero: React.FC<PhonofilmHeroProps> = ({
                 onOpenSubtitles();
               }
             }}
-            className="flex items-center justify-between gap-3 rounded-2xl sm:rounded-full border border-white/15 bg-black/45 hover:bg-black/60 hover:border-amber-400/40 px-4 sm:px-5 py-2.5 backdrop-blur-md transition-all cursor-pointer max-w-md select-none group"
+            className="flex items-center justify-between gap-3 rounded-2xl sm:rounded-full border border-white/20 bg-[#101016]/95 hover:bg-[#181822] hover:border-amber-400/50 px-4 sm:px-5 py-2.5 backdrop-blur-xl transition-all cursor-pointer max-w-md select-none group shadow-xl"
           >
             <div className="flex items-center gap-2.5 min-w-0">
               <Languages className="h-4 w-4 text-amber-400 shrink-0" />
               <div className="flex items-baseline gap-1.5 truncate">
-                <span className="text-xs sm:text-sm font-bold text-white group-hover:text-amber-300 transition-colors">
+                <span className="text-xs sm:text-sm font-extrabold text-white group-hover:text-amber-300 transition-colors">
                   Subtitles
                 </span>
-                <span className="text-xs text-white/60">in your language</span>
+                <span className="text-xs font-semibold text-white/80">in your language</span>
               </div>
             </div>
 
@@ -350,7 +385,7 @@ export const PhonofilmHero: React.FC<PhonofilmHeroProps> = ({
                 <span>🇪🇹</span>
                 <span>🇫🇷</span>
               </div>
-              <ChevronRight className="h-4 w-4 text-white/50 group-hover:text-amber-400 group-hover:translate-x-0.5 transition-all" />
+              <ChevronRight className="h-4 w-4 text-amber-400 group-hover:translate-x-0.5 transition-all" />
             </div>
           </div>
 
@@ -360,10 +395,10 @@ export const PhonofilmHero: React.FC<PhonofilmHeroProps> = ({
             <button
               type="button"
               onClick={handleToggleWatchlist}
-              className={`flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold backdrop-blur-md transition-all cursor-pointer ${
+              className={`flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-bold transition-all shadow-md cursor-pointer ${
                 isBookmarked
-                  ? 'bg-amber-400 text-black shadow-md shadow-amber-400/25 border border-amber-300'
-                  : 'border border-white/12 bg-black/40 text-white/80 hover:bg-white/10 hover:text-white'
+                  ? 'bg-amber-400 text-black shadow-amber-400/25 border border-amber-300'
+                  : 'border border-white/20 bg-[#101016]/90 text-white hover:bg-white/15'
               }`}
             >
               <Bookmark className={`h-3.5 w-3.5 ${isBookmarked ? 'fill-black' : ''}`} />
@@ -374,10 +409,10 @@ export const PhonofilmHero: React.FC<PhonofilmHeroProps> = ({
             <button
               type="button"
               onClick={handleToggleWatched}
-              className={`flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold backdrop-blur-md transition-all cursor-pointer ${
+              className={`flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-bold transition-all shadow-md cursor-pointer ${
                 hasWatched
-                  ? 'bg-emerald-400 text-black shadow-md shadow-emerald-400/25 border border-emerald-300'
-                  : 'border border-white/12 bg-black/40 text-white/80 hover:bg-white/10 hover:text-white'
+                  ? 'bg-emerald-400 text-black shadow-emerald-400/25 border border-emerald-300'
+                  : 'border border-white/20 bg-[#101016]/90 text-white hover:bg-white/15'
               }`}
             >
               <Eye className="h-3.5 w-3.5" />
@@ -388,7 +423,7 @@ export const PhonofilmHero: React.FC<PhonofilmHeroProps> = ({
             <button
               type="button"
               onClick={onOpenAddToList}
-              className="flex items-center gap-1.5 rounded-full border border-white/12 bg-black/40 px-3.5 py-1.5 text-xs font-semibold text-white/80 hover:bg-white/10 hover:text-white backdrop-blur-md transition-all cursor-pointer"
+              className="flex items-center gap-1.5 rounded-full border border-white/20 bg-[#101016]/90 px-4 py-2 text-xs font-bold text-white hover:bg-white/15 shadow-md transition-all cursor-pointer"
             >
               <Plus className="h-3.5 w-3.5" />
               <span>Add to list</span>
@@ -398,10 +433,10 @@ export const PhonofilmHero: React.FC<PhonofilmHeroProps> = ({
             <button
               type="button"
               onClick={handleToggleLike}
-              className={`flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold backdrop-blur-md transition-all cursor-pointer ${
+              className={`flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-bold shadow-md transition-all cursor-pointer ${
                 isLiked
-                  ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40'
-                  : 'border border-white/12 bg-black/40 text-white/80 hover:bg-white/10 hover:text-white'
+                  ? 'bg-rose-500/25 text-rose-300 border border-rose-500/50'
+                  : 'border border-white/20 bg-[#101016]/90 text-white hover:bg-white/15'
               }`}
             >
               <Heart className={`h-3.5 w-3.5 ${isLiked ? 'fill-rose-400 text-rose-400' : ''}`} />
@@ -412,12 +447,12 @@ export const PhonofilmHero: React.FC<PhonofilmHeroProps> = ({
             <button
               type="button"
               onClick={handleShare}
-              className="flex items-center gap-1.5 rounded-full border border-white/12 bg-black/40 px-3.5 py-1.5 text-xs font-semibold text-white/80 hover:bg-white/10 hover:text-white backdrop-blur-md transition-all cursor-pointer"
+              className="flex items-center gap-1.5 rounded-full border border-white/20 bg-[#101016]/90 px-4 py-2 text-xs font-bold text-white hover:bg-white/15 shadow-md transition-all cursor-pointer"
             >
               {shareCopied ? (
                 <>
                   <Check className="h-3.5 w-3.5 text-emerald-400" />
-                  <span className="text-emerald-300">Link Copied!</span>
+                  <span className="text-emerald-300">Copied!</span>
                 </>
               ) : (
                 <>
@@ -429,12 +464,12 @@ export const PhonofilmHero: React.FC<PhonofilmHeroProps> = ({
           </div>
 
           {/* Prime Video / CinemaHD Watermark Badge in bottom left */}
-          <div className="pt-2 flex items-center gap-2 opacity-75">
-            <span className="font-serif italic font-extrabold text-lg text-white/40 tracking-tight">
+          <div className="pt-2 flex items-center gap-2 opacity-85">
+            <span className="font-serif italic font-extrabold text-lg text-white/60 tracking-tight drop-shadow">
               prime video
             </span>
-            <span className="text-white/20">|</span>
-            <span className="text-[11px] font-bold text-amber-400/80 uppercase tracking-widest flex items-center gap-1">
+            <span className="text-white/30">|</span>
+            <span className="text-[11px] font-bold text-amber-400 uppercase tracking-widest flex items-center gap-1 drop-shadow">
               <Sparkles className="h-3 w-3" /> CinemaHD Ultra
             </span>
           </div>
@@ -442,15 +477,15 @@ export const PhonofilmHero: React.FC<PhonofilmHeroProps> = ({
       </div>
 
       {/* Parental Rating Footer Line (Under the banner card as in reference image) */}
-      <div className="flex items-center gap-3 pt-3 border-t border-white/10 text-xs px-2">
-        <span className="font-bold tracking-widest text-white/40 uppercase text-[11px]">
+      <div className="flex items-center gap-3 pt-3 border-t border-white/15 text-xs px-2">
+        <span className="font-bold tracking-widest text-white/50 uppercase text-[11px]">
           PARENTAL RATING
         </span>
-        <span className="rounded bg-white/10 border border-white/15 px-2 py-0.5 font-extrabold text-white">
+        <span className="rounded bg-white/15 border border-white/25 px-2.5 py-0.5 font-black text-white">
           {getParentalRating()}
         </span>
         <span className="text-white/30 hidden sm:inline">•</span>
-        <span className="text-white/40 hidden sm:inline">
+        <span className="text-white/50 hidden sm:inline font-medium">
           {isTv ? 'Suitable for mature audiences' : 'Parental guidance advised for younger viewers'}
         </span>
       </div>
