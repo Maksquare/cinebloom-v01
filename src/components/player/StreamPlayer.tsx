@@ -16,6 +16,8 @@ interface StreamPlayerProps {
   onToggleLightsOut: () => void;
   isControlledPlaying?: boolean;
   onStartPlaying?: () => void;
+  activeServerId?: string;
+  onSelectServer?: (id: string) => void;
 }
 
 export const StreamPlayer: React.FC<StreamPlayerProps> = ({
@@ -26,9 +28,13 @@ export const StreamPlayer: React.FC<StreamPlayerProps> = ({
   onToggleLightsOut,
   isControlledPlaying,
   onStartPlaying,
+  activeServerId: externalServerId,
+  onSelectServer: externalSelectServer,
 }) => {
   const [isPlaying, setIsPlaying] = useState(Boolean(isControlledPlaying));
-  const [activeServerId, setActiveServerId] = useState<string>(STREAM_SERVERS[0].id);
+  const [internalServerId, setInternalServerId] = useState<string>(STREAM_SERVERS[0].id);
+  const activeServerId = externalServerId || internalServerId;
+  const setActiveServerId = externalSelectServer || setInternalServerId;
   const [reloadKey, setReloadKey] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [showSlowHelper, setShowSlowHelper] = useState(false);
@@ -191,9 +197,9 @@ export const StreamPlayer: React.FC<StreamPlayerProps> = ({
               key={`${embedUrl}-${reloadKey}`}
               src={embedUrl}
               title={`${media.title} Stream Player`}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
+              allow="autoplay; fullscreen; picture-in-picture; encrypted-media; gyroscope; accelerometer; clipboard-write; screen-wake-lock"
               allowFullScreen
-              referrerPolicy="origin-when-cross-origin"
+              referrerPolicy="origin"
               loading="eager"
               onLoad={() => setIsLoading(false)}
               className="h-full w-full border-0"

@@ -3,6 +3,7 @@
 import React, { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { MediaItem } from '@/types/media';
+import { STREAM_SERVERS, getEmbedUrl } from '@/lib/embeds';
 import { PhonofilmHero } from '@/components/media/PhonofilmHero';
 import { StreamPlayer } from '@/components/player/StreamPlayer';
 import { EpisodePicker } from '@/components/player/EpisodePicker';
@@ -27,6 +28,8 @@ export const WatchRoomInteractive: React.FC<WatchRoomInteractiveProps> = ({
 
   const [currentSeason, setCurrentSeason] = useState(initialSeason);
   const [currentEpisode, setCurrentEpisode] = useState(initialEpisode);
+  const [activeServerId, setActiveServerId] = useState<string>(STREAM_SERVERS[0].id);
+  const [isHeroPlayerOpen, setIsHeroPlayerOpen] = useState(false);
   const [isLightsOut, setIsLightsOut] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
 
@@ -37,6 +40,7 @@ export const WatchRoomInteractive: React.FC<WatchRoomInteractiveProps> = ({
   const [isAddToListOpen, setIsAddToListOpen] = useState(false);
 
   const isTvShow = media.mediaType === 'tv';
+  const embedUrl = getEmbedUrl(activeServerId, media, currentSeason, currentEpisode);
 
   const handleEpisodeSelect = (s: number, e: number) => {
     setCurrentSeason(s);
@@ -47,10 +51,8 @@ export const WatchRoomInteractive: React.FC<WatchRoomInteractiveProps> = ({
   };
 
   const handleWatchNow = () => {
+    setIsHeroPlayerOpen(true);
     setIsPlaying(true);
-    if (playerRef.current) {
-      playerRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
   };
 
   return (
@@ -64,13 +66,18 @@ export const WatchRoomInteractive: React.FC<WatchRoomInteractiveProps> = ({
         />
       )}
 
-      {/* 1. Phonofilm Showcase Hero Banner */}
+      {/* 1. Phonofilm Showcase Hero Banner with Inline Cinema Player Mode */}
       <section className="relative z-10 w-full mb-8">
         <PhonofilmHero
           media={media}
           season={currentSeason}
           episode={currentEpisode}
           isPlaying={isPlaying}
+          isHeroPlayerOpen={isHeroPlayerOpen}
+          onCloseHeroPlayer={() => setIsHeroPlayerOpen(false)}
+          activeServerId={activeServerId}
+          onSelectServer={(id) => setActiveServerId(id)}
+          embedUrl={embedUrl}
           onWatchNow={handleWatchNow}
           onOpenTrailer={() => setIsTrailerOpen(true)}
           onOpenSubtitles={() => setIsSubtitlesOpen(true)}
@@ -79,7 +86,7 @@ export const WatchRoomInteractive: React.FC<WatchRoomInteractiveProps> = ({
         />
       </section>
 
-      {/* 2. Streaming Player Section */}
+      {/* 2. Secondary Streaming Player Section (Synchronized) */}
       <div
         id="watch-player"
         ref={playerRef}
@@ -105,6 +112,8 @@ export const WatchRoomInteractive: React.FC<WatchRoomInteractiveProps> = ({
           onToggleLightsOut={() => setIsLightsOut((prev) => !prev)}
           isControlledPlaying={isPlaying}
           onStartPlaying={() => setIsPlaying(true)}
+          activeServerId={activeServerId}
+          onSelectServer={(id) => setActiveServerId(id)}
         />
       </div>
 

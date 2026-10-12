@@ -8,39 +8,9 @@ import { MediaItem, StreamServer } from '@/types/media';
  */
 export const STREAM_SERVERS: StreamServer[] = [
   {
-    id: 'vidlink',
-    name: 'VidLink Ultra',
-    tag: 'Primary Stream Server • Ultra 4K HDR • Multi-Subtitles',
-    speed: 'Ultra',
-    quality: '4K HDR',
-    hasSubtitles: true,
-    getUrl: (media: MediaItem, season = 1, episode = 1) => {
-      const tmdbId = media.tmdbId || media.id;
-      if (media.mediaType === 'tv') {
-        return `https://vidlink.pro/tv/${tmdbId}/${season}/${episode}`;
-      }
-      return `https://vidlink.pro/movie/${tmdbId}`;
-    },
-  },
-  {
-    id: 'vidsrc-pm',
-    name: 'VidSrc.pm',
-    tag: 'Official Mirror 2 • Fast 1080p HD',
-    speed: 'Ultra',
-    quality: '1080p HD',
-    hasSubtitles: true,
-    getUrl: (media: MediaItem, season = 1, episode = 1) => {
-      const tmdbId = media.tmdbId || media.id;
-      if (media.mediaType === 'tv') {
-        return `https://vidsrc.pm/embed/tv/${tmdbId}/${season}/${episode}`;
-      }
-      return `https://vidsrc.pm/embed/movie/${tmdbId}`;
-    },
-  },
-  {
     id: 'primesrc',
     name: 'PrimeSrc 4K',
-    tag: 'NotFlix High-Speed 4K HDR • Low Latency',
+    tag: 'Ultra-Fast 4K HDR • Instant Playback • Low Latency',
     speed: 'Ultra',
     quality: '4K HDR',
     hasSubtitles: true,
@@ -55,7 +25,7 @@ export const STREAM_SERVERS: StreamServer[] = [
   {
     id: 'vidsrc-sh',
     name: 'VidSrc Official',
-    tag: 'Official VidSrc Cloud Stream • 1080p HD',
+    tag: 'Official VidSrc Cloud Stream • 1080p HD • Multi-Audio',
     speed: 'Ultra',
     quality: '1080p HD',
     hasSubtitles: true,
@@ -68,9 +38,24 @@ export const STREAM_SERVERS: StreamServer[] = [
     },
   },
   {
+    id: 'moviesapi-to',
+    name: 'MoviesAPI Turbo',
+    tag: 'NotFlix Default Engine • Fast Edge Network',
+    speed: 'Ultra',
+    quality: '1080p HD',
+    hasSubtitles: true,
+    getUrl: (media: MediaItem, season = 1, episode = 1) => {
+      const tmdbId = media.tmdbId || media.id;
+      if (media.mediaType === 'tv') {
+        return `https://moviesapi.to/tv/${tmdbId}-${season}-${episode}`;
+      }
+      return `https://moviesapi.to/movie/${tmdbId}`;
+    },
+  },
+  {
     id: 'vidsrc-to',
     name: 'VidSrc.to',
-    tag: 'VidSrc Direct HD Mirror',
+    tag: 'VidSrc Direct HD Mirror • High Speed',
     speed: 'Ultra',
     quality: '1080p HD',
     hasSubtitles: true,
@@ -80,6 +65,36 @@ export const STREAM_SERVERS: StreamServer[] = [
         return `https://vidsrc.to/embed/tv/${tmdbId}/${season}/${episode}`;
       }
       return `https://vidsrc.to/embed/movie/${tmdbId}`;
+    },
+  },
+  {
+    id: 'vidsrc-pm',
+    name: 'VidSrc.pm',
+    tag: 'Official Mirror • Fast 1080p HD',
+    speed: 'Ultra',
+    quality: '1080p HD',
+    hasSubtitles: true,
+    getUrl: (media: MediaItem, season = 1, episode = 1) => {
+      const tmdbId = media.tmdbId || media.id;
+      if (media.mediaType === 'tv') {
+        return `https://vidsrc.pm/embed/tv/${tmdbId}/${season}/${episode}`;
+      }
+      return `https://vidsrc.pm/embed/movie/${tmdbId}`;
+    },
+  },
+  {
+    id: 'vidlink',
+    name: 'VidLink Ultra',
+    tag: 'Ultra 4K Stream • Multi-Subtitles',
+    speed: 'Ultra',
+    quality: '4K HDR',
+    hasSubtitles: true,
+    getUrl: (media: MediaItem, season = 1, episode = 1) => {
+      const tmdbId = media.tmdbId || media.id;
+      if (media.mediaType === 'tv') {
+        return `https://vidlink.pro/tv/${tmdbId}/${season}/${episode}`;
+      }
+      return `https://vidlink.pro/movie/${tmdbId}`;
     },
   },
   {
